@@ -30,18 +30,18 @@ MongoCompass      : 1.48.2
 
 ## 12 app Factor
 
-- [Factor 1. Codebase]() _"One codebase tracked in revision control, many deploys"_
-- [Factor 2. Dependencies]() _"Explicitly declare and isolate dependencies"_
-- [Factor 3. Config]() _"Store config in the environment"_
-- [Factor 4. Backing service]() _"Treat backing services as attached resources"_
-- [Factor 5. Build, Release, Run]() _"Strictly separate build and run stages"_
-- [Factor 6. Process ]() _"Execute the app as one or more stateless processes"_
-- [Factor 7. Port Binding]() _"Export services via port binding"_
-- [Factor 8. Concurrency]() _"Scale out via the process model"_
-- [Factor 9. Disposability]() _"Maximize robustness with fast startup and graceful shutdown"_
-- [Factor 10. Dev/Prod parity]() _"Keep development, staging, and production as similar as possible"_
-- [Factor 11. Logs]() _"Treat logs as event streams"_
-- [Factor 12. Admin Processes]() _"Run admin/management tasks as one-off processes"_
+- [Factor 1. Codebase](#factor-1-codebase) _"One codebase tracked in revision control, many deploys"_
+- [Factor 2. Dependencies](#factor-2-dependencies) _"Explicitly declare and isolate dependencies"_
+- [Factor 3. Config](#factor-3-config) _"Store config in the environment"_
+- [Factor 4. Backing service](#factor-4-backing-service) _"Treat backing services as attached resources"_
+- [Factor 5. Build, Release, Run](#factor-5-build-release-run) _"Strictly separate build and run stages"_
+- [Factor 6. Process ](#factor-6-process) _"Execute the app as one or more stateless processes"_
+- [Factor 7. Port Binding](#factor-7-port-binding) _"Export services via port binding"_
+- [Factor 8. Concurrency](#factor-8-concurrency) _"Scale out via the process model"_
+- [Factor 9. Disposability](#factor-9-disposability) _"Maximize robustness with fast startup and graceful shutdown"_
+- [Factor 10. Dev/Prod parity](#factor-10-devprod-parity) _"Keep development, staging, and production as similar as possible"_
+- [Factor 11. Logs](#factor-11-logs) _"Treat logs as event streams"_
+- [Factor 12. Admin Processes](#factor-12-admin-processes) _"Run admin/management tasks as one-off processes"_
 
 ---
 
@@ -72,6 +72,8 @@ cd 12factor-angular-express-workshop
 make start
 ```
 
+**[⬆ Back to top](#12-app-factor)**
+
 ## Factor 2. Dependencies
 
 _"Explicitly declare and isolate dependencies"_
@@ -81,6 +83,8 @@ This project uses a Node Package Manager ( `npm` ) to manage package and package
 ```bash
 make npm-install #auto command install frontend and backend
 ```
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 3. Config
 
@@ -161,6 +165,8 @@ However,I've already created a `config.js` file and run it in npm `package.json`
  }
 }
 ```
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 4. Backing service
 
@@ -249,6 +255,8 @@ In local development, MongoDB and Redis run as Docker containers.
 In production, they are external managed services.
 The application treats them the same way—via environment variables.
 
+**[⬆ Back to top](#12-app-factor)**
+
 ## Factor 5. Build, Release, Run
 
 _"Strictly separate build and run stages"_
@@ -279,6 +287,8 @@ You can search for other commands that I have been created.
 ```bash
 make help
 ```
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 6. Process
 
@@ -325,6 +335,8 @@ with the following line:
 await deleteCache("workshopResponses");
 ```
 
+**[⬆ Back to top](#12-app-factor)**
+
 ## Factor 7. Port Binding
 
 _"Export services via port binding"_
@@ -337,6 +349,8 @@ Backend   port ...
 redis     port ...
 mongodb   port ...
 ```
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 8. Concurrency
 
@@ -373,6 +387,8 @@ backend:
     - redis
 ```
 
+**[⬆ Back to top](#12-app-factor)**
+
 ## Factor 9. Disposability
 
 _"Maximize robustness with fast startup and graceful shutdown"_
@@ -385,24 +401,26 @@ async function gracefulShutdown(signal: string) {
   console.log(`🛑 ${signal} received. Shutting down gracefully...`);
 
   server.close(async () => {
-    console.log('📴 HTTP server closed');
+    console.log("📴 HTTP server closed");
 
     await closeDB();
     await closeRedis();
 
-    console.log('✅ Graceful shutdown completed');
+    console.log("✅ Graceful shutdown completed");
     process.exit(0);
   });
 
   setTimeout(() => {
-    console.error('⏱️ Force shutdown');
+    console.error("⏱️ Force shutdown");
     process.exit(1);
   }, 10000);
 }
 
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
+process.on("SIGTERM", gracefulShutdown);
+process.on("SIGINT", gracefulShutdown);
 ```
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 10. Dev/Prod parity
 
@@ -418,19 +436,23 @@ In this workshop Frontend and backend follows a structured branching strategy on
 
 3. Changes are merged into develop and then promoted to master within no more than one day (or week).
 
+**[⬆ Back to top](#12-app-factor)**
+
 ## Factor 11. Logs
 
 _"Treat logs as event streams"_
 
 This workshop implements centralized logging by storing application logs in MongoDB to monitor and trace application behavior.
 
-* Observe `how the application is operating`
+- Observe `how the application is operating`
 
-* `Track application startup` and runtime events
+- `Track application startup` and runtime events
 
-* Identify `where the application is running`
+- Identify `where the application is running`
 
-* `Record graceful shutdown` events of the application and its related services
+- `Record graceful shutdown` events of the application and its related services
+
+**[⬆ Back to top](#12-app-factor)**
 
 ## Factor 12. Admin Processes
 
@@ -441,8 +463,20 @@ This workshop using a Makefile to manage all administrative and operational task
 Makefile
 
 ```bash
-
+make start
+make npm-install
+make build
+make build-front
+make build-back
+make build-compose
+make build-compose-back
+make build-compose-front
+make Run-frontend
+make Run-backend
+make down
 ```
 
 These commands are not part of the long-running web process.
 They are executed only when needed and terminate immediately after finishing their task.
+
+**[⬆ Back to top](#12-app-factor)**
