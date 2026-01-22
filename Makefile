@@ -1,8 +1,70 @@
-.PHONY: set npm-install
+SHELL := /bin/bash
+.SHELLFLAGS := -c
 
-set:
+MONGO_DB = mongosh --host localhost --port 27017 
+
+.PHONY: start npm-install build build-front build-back build-compose build-compose-back build-compose-front Run-frontend Run-backend
+
+help:
+	@echo "Makefile for 12 Factor App with Angular and Express"
+	@echo ""
+	@echo "Available commands:"
+	@echo "  make start                 - Clone the frontend and backend repositories"
+	@echo "  make npm-install           - Install npm packages for both frontend and backend"
+	@echo "  make build                 - Build both frontend and backend applications"
+	@echo "  make build-front           - Build only the Angular frontend application"
+	@echo "  make build-back            - Build only the Express backend application"
+	@echo "  make build-compose         - Build and run all services using docker-compose"
+	@echo "  make build-compose-back    - Build and run only the backend service using docker-compose"
+	@echo "  make build-compose-front   - Build and run only the frontend service using docker-compose"
+	@echo "  make Run-frontend          - Start the Angular frontend application"
+	@echo "  make Run-backend           - Start the Express backend application"
+	@echo "  make down                  - Stop all running docker-compose services"
+
+start:
+	@echo "Start clone repository... 👁👄👁"
 	git clone git@github.com:phongphat-myorder/RVE-frontend-repo.git
 	git clone git@github.com:phongphat-myorder/RVE-backend-repo.git
 
 npm-install:
+	@echo "Install npm packages... 📲"
 	cd RVE-frontend-repo && npm install && cd ../RVE-backend-repo && npm install
+
+build:
+	@echo "Build App Full... 🌗"
+	cd RVE-frontend-repo && npm run build && cd ../RVE-backend-repo && npm run build
+
+build-front:
+	@echo "Build Angular Frontend... 🌕"
+	cd RVE-frontend-repo && npm run build
+
+build-back:
+	@echo "Build Express Backend... 🌑"
+	cd RVE-backend-repo && npm run build
+
+build-compose:
+	@echo "Build docker-compose All in one... 🐳"
+	docker-compose -f "docker-compose.yml" up --build
+
+build-compose-back:
+	@echo "Build backend service... 🐳🌑"
+	cd RVE-backend-repo && docker build -t rve-backend-service .
+	docker-compose -f "./RVE-backend-repo/docker-compose.yml" up --build rve-backend-service
+
+build-compose-front:
+	@echo "Build frontend service... 🐳🌕"
+	cd RVE-frontend-repo && docker build -t rve-frontend-service .
+	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" up --build rve-frontend-service
+
+Run-frontend:
+	@echo "Run Angular Frontend... 🏃‍♂️🌕"
+	cd RVE-frontend-repo && npm start
+
+Run-backend:
+	@echo "Run Express Backend... 🏃‍♂️🌑"
+	cd RVE-backend-repo && npm start
+
+down:
+	@echo "Write-Output 'down...🛬'"
+	docker-compose down
+	

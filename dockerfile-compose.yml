@@ -1,24 +1,58 @@
-# version: "3.9" Daft 
+version: "3.9"
 
-# services:
-#   backend:
-#     build: ./backend
-#     ports:
-#       - "8080:8080"
-#     command: npm run start
-#     depends_on:
-#       - redis
+services:
+  backend:
+    build:
+      context: ./RVE-backend-repo
+      dockerfile: Dockerfile
+    args:
+      APP_ENV: ${APP_ENV}
+      PORT: ${PORT}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      MONGO_URL: ${MONGO_URL}
+      REDIS_URL: ${REDIS_URL}
+    image: rve-backend
+    env_file:
+      - ./RVE-backend-repo/.env.dev
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - redis
 
-#   frontend:
-#     build: ./frontend
-#     ports:
-#       - "4200:80"
-#     environment:
-#       - API_URL=http://backend:8080
+  frontend:
+    build:
+      context: ./RVE-frontend-repo
+      args:
+        NG_APP_API_URL: ${NG_APP_API_URL}
+        MY_ENV: ${MY_ENV}
+      dockerfile: Dockerfile
+    image: rve-frontend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./RVE-frontend-repo/.env
 
-#   redis:
-#     image: redis
-#     ports:
-#     - 6379:6379
-#     build:
-#       context: .
+  redis:
+    image: redis:7.0
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis:/data
+
+  mongodb:
+    build:
+      context: ./RVE-backend-repo/test/mongo
+      dockerfile: Dockerfile
+    image: mongo:8.0
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodata:/data/db
+volumes:
+  redis:
+    driver: local
+  mongodata:
+    driver: local
