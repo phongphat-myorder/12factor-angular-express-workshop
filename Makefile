@@ -3,7 +3,7 @@ SHELL := /bin/bash
 
 MONGO_DB = mongosh --host localhost --port 27017 
 
-.PHONY: start npm-install build build-front build-back build-compose build-compose-back build-compose-front Run-frontend Run-backend
+.PHONY: start npm-install build build-front build-back build-compose build-compose-back build-compose-front run-front run-back
 
 help:
 	@echo "Makefile for 12 Factor App with Angular and Express"
@@ -17,8 +17,8 @@ help:
 	@echo "  make build-compose         - Build and run all services using docker-compose"
 	@echo "  make build-compose-back    - Build and run only the backend service using docker-compose"
 	@echo "  make build-compose-front   - Build and run only the frontend service using docker-compose"
-	@echo "  make Run-frontend          - Start the Angular frontend application"
-	@echo "  make Run-backend           - Start the Express backend application"
+	@echo "  make run-front             - Start the Angular frontend application"
+	@echo "  make run-back              - Start the Express backend application"
 	@echo "  make down                  - Stop all running docker-compose services"
 
 start:
@@ -27,8 +27,10 @@ start:
 	git clone git@github.com:phongphat-myorder/RVE-backend-repo.git
 
 npm-install:
+	@echo "Install npm packages from frontend... 📲"
+	cd RVE-frontend-repo && npm install && npm audit fix --force
 	@echo "Install npm packages... 📲"
-	cd RVE-frontend-repo && npm install && cd ../RVE-backend-repo && npm install
+	cd RVE-backend-repo && npm install
 
 build:
 	@echo "Build App Full... 🌗"
@@ -44,27 +46,27 @@ build-back:
 
 build-compose:
 	@echo "Build docker-compose All in one... 🐳"
-	docker-compose -f "docker-compose.yml" up --build
+	make build-compose-front
+	make build-compose-back
 
 build-compose-back:
 	@echo "Build backend service... 🐳🌑"
-	cd RVE-backend-repo && docker build -t rve-backend-service .
-	docker-compose -f "./RVE-backend-repo/docker-compose.yml" up --build
+	docker-compose -f "./RVE-backend-repo/docker-compose.yml" up -d --build
 
 build-compose-front:
 	@echo "Build frontend service... 🐳🌕"
-	cd RVE-frontend-repo && docker build -t rve-frontend-service .
-	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" up --build 
+	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" up -d --build 
 
-Run-frontend:
+run-front:
 	@echo "Run Angular Frontend... 🏃‍♂️🌕"
-	cd RVE-frontend-repo && npm start
+	cd RVE-frontend-repo && npm run start
 
-Run-backend:
+run-back:
 	@echo "Run Express Backend... 🏃‍♂️🌑"
-	cd RVE-backend-repo && npm start
+	cd RVE-backend-repo && npm run start
 
 down:
 	@echo "Write-Output 'down...🛬'"
-	docker-compose down
+	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" down
+	docker-compose -f "./RVE-backend-repo/docker-compose.yml" down
 	
