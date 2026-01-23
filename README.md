@@ -279,7 +279,7 @@ _"Strictly separate build and run stages"_
 
 The workshop uses `Makefile` commands to structure the workflow, enabling participants to run each step even with incomplete code.
 
-ิ- build
+- build
 
 ```bash
 make build #Build font-back
