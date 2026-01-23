@@ -49,12 +49,12 @@ build-compose:
 build-compose-back:
 	@echo "Build backend service... 🐳🌑"
 	cd RVE-backend-repo && docker build -t rve-backend-service .
-	docker-compose -f "./RVE-backend-repo/docker-compose.yml" up --build rve-backend-service
+	docker-compose -f "./RVE-backend-repo/docker-compose.yml" up --build
 
 build-compose-front:
 	@echo "Build frontend service... 🐳🌕"
 	cd RVE-frontend-repo && docker build -t rve-frontend-service .
-	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" up --build rve-frontend-service
+	docker-compose -f "./RVE-frontend-repo/docker-compose.yml" up --build 
 
 Run-frontend:
 	@echo "Run Angular Frontend... 🏃‍♂️🌕"
