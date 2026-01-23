@@ -278,18 +278,24 @@ The workshop uses `Makefile` commands to structure the workflow, enabling partic
 ิ- build
 
 ```bash
+make build #Build font-back
 make build-back  #Build express backend
 make build-front #Build angular frontend
-make build-compose #Build docker compose font-back and service
-make build-compose-front #Build docker compose only frontend and service
-make build-compose-back #Build docker compose only backend and service
 ```
 
 - Run
 
 ```bash
-make Run-frontend
-make Run-backend
+make run-front
+make run-back
+```
+
+- Docker compose
+
+```bash
+make build-compose #Build docker compose font-back and service
+make build-compose-front #Build docker compose only frontend and service
+make build-compose-back #Build docker compose only backend and service
 ```
 
 You can search for other commands that I have been created.
