@@ -103,6 +103,7 @@ EMAIL_USER=YourEmail@gmail.com   #your Google email
 EMAIL_PASS=YourEmailPassword     #use google app password for security
 MONGO_URL=mongodb://localhost:27017/workshop_db
 REDIS_URL=redis://localhost:6379
+PINO_LOG_LEVEL=debug
 ```
 
 `.env.dev`
@@ -114,6 +115,7 @@ EMAIL_USER=YourEmail@gmail.com   #your Google email
 EMAIL_PASS=YourEmailPassword     #use google app password for security
 MONGO_URL=mongodb://mongodb:27017/workshop_db  # Use mongodb not localhost!!
 REDIS_URL=redis://redis:6379 # Use redis not localhost!!
+PINO_LOG_LEVEL=debug
 ```
 
 google app password: *https://myaccount.google.com/apppasswords*
@@ -136,6 +138,7 @@ const REQUIRED_ENVS = [
   "EMAIL_PASS",
   "MONGO_URL",
   "REDIS_URL",
+  "PINO_LOG_LEVEL",
 ] as const;
 
 export function validateConfig() {
@@ -154,6 +157,7 @@ export const config = {
   EMAIL_PASS: process.env.EMAIL_PASS! as string,
   MONGO_URL: process.env.MONGO_URL! as string,
   REDIS_URL: process.env.REDIS_URL! as string,
+  PINO_LOG_LEVEL: process.env.PINO_LOG_LEVEL! as string,
 };
 ```
 
@@ -535,8 +539,8 @@ make build-back
 make build-compose
 make build-compose-back
 make build-compose-front
-make Run-frontend
-make Run-backend
+make run-front
+make run-back
 make down
 ```
 
