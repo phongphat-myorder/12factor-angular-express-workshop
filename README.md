@@ -129,19 +129,31 @@ import path from "node:path";
 
 dotdev.config({ path: path.resolve(__dirname, "../../.env") }); // local .env file
 
-const REQUIRED_ENVS = ["PORT", "EMAIL_USER", "EMAIL_PASS"] as const;
+const REQUIRED_ENVS = [
+  "APP_ENV",
+  "PORT",
+  "EMAIL_USER",
+  "EMAIL_PASS",
+  "MONGO_URL",
+  "REDIS_URL",
+] as const;
 
-for (const key of REQUIRED_ENVS) {
-  if (!process.env[key]) {
-    console.error(`❌ Missing required env: ${key}`);
-    process.exit(1);
+export function validateConfig() {
+  for (const key of REQUIRED_ENVS) {
+    if (!process.env[key]) {
+      console.error(`❌ Missing required env: ${key}`);
+      process.exit(1);
+    }
   }
 }
 
 export const config = {
+  APP_ENV: process.env.APP_ENV! as string,
   PORT: Number(process.env.PORT!),
-  EMAIL_USER: process.env.EMAIL_USER!,
-  EMAIL_PASS: process.env.EMAIL_PASS!,
+  EMAIL_USER: process.env.EMAIL_USER! as string,
+  EMAIL_PASS: process.env.EMAIL_PASS! as string,
+  MONGO_URL: process.env.MONGO_URL! as string,
+  REDIS_URL: process.env.REDIS_URL! as string,
 };
 ```
 
@@ -311,7 +323,6 @@ import { getCache, setCache, deleteCache } from "../redis/workshop_db.cache";
 try {
   const cacheData = await getCache("workshopResponses");
   if (cacheData) {
-    console.log("Cache hit");
     return res.status(200).json({ cacheMessage: JSON.parse(cacheData) });
   }
   const dataFromDB = await WorkshopRepo.getAllData();
@@ -360,7 +371,7 @@ This factor states that applications should scale by running multiple instances 
 
 In a 12-Factor App, concurrency is achieved by replicating stateless processes, not by adding threads or shared in-memory state.
 
-`RVE-backend-repo/docker-compose.local.yml`
+`RVE-backend-repo/docker-compose.yml`
 
 ```yml
 backend:
@@ -403,8 +414,8 @@ async function gracefulShutdown(signal: string) {
   server.close(async () => {
     console.log("📴 HTTP server closed");
 
-    await closeDB();
     await closeRedis();
+    await closeDB();
 
     console.log("✅ Graceful shutdown completed");
     process.exit(0);
@@ -442,15 +453,62 @@ In this workshop Frontend and backend follows a structured branching strategy on
 
 _"Treat logs as event streams"_
 
-This workshop implements centralized logging by storing application logs in MongoDB to monitor and trace application behavior.
+**Please include sample logs in the `RVE-backend-repo`.**
 
-- Observe `how the application is operating`
+Log level: Low ---> Hight Level
 
-- `Track application startup` and runtime events
+### Trace
 
-- Identify `where the application is running`
+- Used to record every `fine-grained operation`, down to `line-level execution`, such as `function calls`, `call origins`, and `internal steps`.
+  intended use: development and testing **not be enabled in production.**
 
-- `Record graceful shutdown` events of the application and its related services
+```typescript
+logger.trace({ message }, "Send email endpoint called with message:");
+```
+
+### Debug
+
+- Logs internal information such as `parameter values`, `configuration data`, and `object states` to help developers understand application behavior.
+  intended use: development and testing **not be enabled in production.**
+
+```typescript
+logger.debug({ APP_ENV: config.APP_ENV }, "App environment");
+```
+
+### Info
+
+- Used to log normal and expected `application events`. Examples include `service startup`, `successful external API calls`, or important `business flow` milestones.
+  intended use: track the general behavior of the system in production.
+
+```typescript
+logger.Info("sent massage success");
+```
+
+### Warn
+
+- Used to log abnormal or `unexpected situations` that do not stop the system from working.Examples include failed login attempts, deprecated API usage, or jobs that initially failed but succeeded after retrying.
+
+### Error
+
+- Logged when an error occurs that causes a specific operation to fail, but the service itself can continue running. Examples include external API failures or database query errors.
+
+```typescript
+logger.error({ error }, "Error sending email");
+```
+
+### Fatal
+
+- Used for critical errors that prevent the process from continuing. The service cannot recover and must shut down or restart.
+
+```typescript
+logger.fatal({ error }, "❌ MongoDB connection error:");
+```
+
+```typescript
+logger.fatal({ error }, "❌ Error closing Redis connection:");
+```
+
+![alt text](./image/Log-Levels.png)
 
 **[⬆ Back to top](#12-app-factor)**
 
