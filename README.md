@@ -26,9 +26,13 @@ Makefile          : Make 3.82.90
 MongoCompass      : 1.48.2
 ```
 [Docker Desktop](https://docs.docker.com/desktop/setup/install/mac-install/)
+
 [Angular CLI](https://angular.dev/installation)
+
 [Node.js](https://nodejs.org/en/download/current)
+
 [Makefile](https://drive.google.com/file/d/1RR_h5qLSrQ3NiNYth4aEwtEHKocbmKk-/view?usp=sharing)
+
 - [instruction](https://medium.com/@samsorrahman/how-to-run-a-makefile-in-windows-b4d115d7c516)
 ---
 
