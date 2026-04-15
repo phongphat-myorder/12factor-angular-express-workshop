@@ -28,7 +28,7 @@ start:
 
 npm-install:
 	@echo "Install npm packages from frontend... 📲"
-	cd RVE-frontend-repo && npm install && npm audit fix --force
+	cd RVE-frontend-repo && npm install
 	@echo "Install npm packages... 📲"
 	cd RVE-backend-repo && npm install
 
